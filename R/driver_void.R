@@ -1,4 +1,4 @@
 
-radbc_void_driver_init_func <- function() {
+radbc_driver_void <- function() {
   .Call(RAdbcVoidDriverInitFunc)
 }

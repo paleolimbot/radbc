@@ -48,6 +48,7 @@ static inline SEXP radbc_allocate_xptr(SEXP shelter_sexp = R_NilValue) {
     Rf_error("Failed to allocate T");
   }
 
+  memset(ptr, 0, sizeof(T));
   SEXP xptr = PROTECT(R_MakeExternalPtr(ptr, R_NilValue, shelter_sexp));
   Rf_setAttrib(xptr, R_ClassSymbol, Rf_mkString(radbc_xptr_class<T>()));
   UNPROTECT(1);
@@ -86,4 +87,8 @@ static inline int radbc_as_int(SEXP sexp) {
   }
 
   Rf_error("Expected integer(1) or double(1) for conversion to int");
+}
+
+static inline SEXP radbc_wrap_status(AdbcStatusCode code) {
+  return Rf_ScalarInteger(code);
 }
