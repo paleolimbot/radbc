@@ -55,11 +55,13 @@ extern "C" SEXP RAdbcDatabaseNew(SEXP driver_init_func_xptr) {
 
   AdbcDatabase* database = radbc_from_xptr<AdbcDatabase>(database_xptr);
   radbc_global_error_reset();
-  int status = AdbcDriverManagerDatabaseSetInitFunc(database, driver_init_func, &global_error_);
+  int status = AdbcDatabaseNew(database, &global_error_);
   radbc_global_error_stop(status, "RAdbcDatabaseNew()");
 
-  status = AdbcDatabaseNew(database, &global_error_);
+  radbc_global_error_reset();
+  status = AdbcDriverManagerDatabaseSetInitFunc(database, driver_init_func, &global_error_);
   radbc_global_error_stop(status, "RAdbcDatabaseNew()");
+
   return database_xptr;
 }
 
