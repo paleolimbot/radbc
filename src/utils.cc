@@ -29,3 +29,25 @@ SEXP RAdbcAllocateError(SEXP shelter_sexp) {
   UNPROTECT(1);
   return error_xptr;
 }
+
+SEXP RAdbcErrorProxy(SEXP error_xptr) {
+  AdbcError* error = radbc_from_xptr<AdbcError>(error_xptr);
+  const char* names[] = {"message", "vendor_code", "sqlstate", ""};
+  SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
+  
+  if (error->message != nullptr) {
+    SEXP error_message = PROTECT(Rf_allocVector(STRSXP, 1));
+    SET_STRING_ELT(error_message, 0, Rf_mkCharCE(error->message, CE_UTF8));
+    SET_VECTOR_ELT(result, 0, error_message);
+    UNPROTECT(1);
+  }
+
+  SET_VECTOR_ELT(result, 1, Rf_ScalarInteger(error->vendor_code));
+
+  SEXP sqlstate = PROTECT(Rf_allocVector(RAWSXP, sizeof(error->sqlstate)));
+  memcpy(RAW(sqlstate), error->sqlstate, sizeof(error->sqlstate));
+  SET_VECTOR_ELT(result, 2, sqlstate);
+
+  UNPROTECT(2);
+  return result;
+}
