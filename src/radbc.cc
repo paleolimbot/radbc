@@ -43,8 +43,15 @@ static void radbc_global_error_stop(int code, const char* context) {
 
 static void finalize_database_xptr(SEXP database_xptr) {
   auto database = reinterpret_cast<AdbcDatabase*>(R_ExternalPtrAddr(database_xptr));
-  int status = AdbcDatabaseRelease(database, &global_error_);
-  radbc_global_error_warn(status, "finalize_database_xptr()");
+  if (database == nullptr) {
+    return;
+  }
+
+  if (database->private_data != nullptr) {
+    int status = AdbcDatabaseRelease(database, &global_error_);
+    radbc_global_error_warn(status, "finalize_database_xptr()");
+  }
+
   radbc_xptr_default_finalize<AdbcDatabase>(database_xptr);
 }
 
@@ -94,9 +101,15 @@ extern "C" SEXP RAdbcDatabaseRelease(SEXP database_xptr, SEXP error_xptr) {
 
 static void finalize_connection_xptr(SEXP connection_xptr) {
   auto connection = reinterpret_cast<AdbcConnection*>(R_ExternalPtrAddr(connection_xptr));
-  int status = AdbcConnectionRelease(connection, &global_error_);
-  R_SetExternalPtrProtected(connection_xptr, R_NilValue);
-  radbc_global_error_warn(status, "finalize_connection_xptr()");
+  if (connection == nullptr) {
+    return;
+  }
+
+  if (connection->private_data != nullptr) {
+    int status = AdbcConnectionRelease(connection, &global_error_);
+    radbc_global_error_warn(status, "finalize_connection_xptr()");
+  }
+
   radbc_xptr_default_finalize<AdbcConnection>(connection_xptr);
 }
 
@@ -240,10 +253,16 @@ extern "C" SEXP RAdbcConnectionRollback(SEXP connection_xptr, SEXP error_xptr) {
 }
 
 static void finalize_statement_xptr(SEXP statement_xptr) {
-  R_SetExternalPtrProtected(statement_xptr, R_NilValue);
   auto statement = reinterpret_cast<AdbcStatement*>(R_ExternalPtrAddr(statement_xptr));
-  int status = AdbcStatementRelease(statement, &global_error_);
-  radbc_global_error_warn(status, "finalize_statement_xptr()");
+  if (statement == nullptr) {
+    return;
+  }
+
+  if (statement->private_data != nullptr) {
+    int status = AdbcStatementRelease(statement, &global_error_);
+    radbc_global_error_warn(status, "finalize_statement_xptr()");
+  }
+
   radbc_xptr_default_finalize<AdbcStatement>(statement_xptr);
 }
 

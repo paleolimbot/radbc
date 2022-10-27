@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include <adbc.h>
+#include "adbc_driver_manager.h"
 #include "radbc.h"
 
 static void finalize_error_xptr(SEXP error_xptr) {
@@ -50,4 +51,10 @@ extern "C" SEXP RAdbcErrorProxy(SEXP error_xptr) {
 
   UNPROTECT(2);
   return result;
+}
+
+extern "C" SEXP RAdbcStatusCodeMessage(SEXP status_sexp) {
+  int status = radbc_as_int(status_sexp);
+  const char* msg = AdbcStatusCodeMessage(status);
+  return Rf_mkString(msg);
 }

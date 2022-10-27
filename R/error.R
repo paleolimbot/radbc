@@ -4,8 +4,9 @@ radbc_allocate_error <- function(shelter = NULL) {
 }
 
 stop_for_error <- function(status, error) {
-  if (status != 0) {
-    stop(error$message)
+  if (!identical(status, 0L)) {
+    msg <- if (!is.null(error$message)) error$message else .Call(RAdbcStatusCodeMessage, status)
+    stop(msg)
   }
 }
 
