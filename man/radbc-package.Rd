@@ -8,6 +8,14 @@
 \description{
 Provides a proof-of-concept R wrapper for 'Arrow' Database Connectivity ('ACBC').
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/paleolimbot/radbc}
+  \item Report bugs at \url{https://github.com/paleolimbot/radbc/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Dewey Dunnington \email{dewey@dunnington.ca} (\href{https://orcid.org/0000-0002-9415-4582}{ORCID})
 
