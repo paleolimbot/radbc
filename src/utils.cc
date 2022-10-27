@@ -16,7 +16,7 @@ static void finalize_error_xptr(SEXP error_xptr) {
   radbc_xptr_default_finalize<AdbcError>(error_xptr);
 }
 
-SEXP RAdbcAllocateError(SEXP shelter_sexp) {
+extern "C" SEXP RAdbcAllocateError(SEXP shelter_sexp) {
   SEXP error_xptr = PROTECT(radbc_allocate_xptr<AdbcError>(shelter_sexp));
   R_RegisterCFinalizer(error_xptr, &finalize_error_xptr);
 
@@ -30,7 +30,7 @@ SEXP RAdbcAllocateError(SEXP shelter_sexp) {
   return error_xptr;
 }
 
-SEXP RAdbcErrorProxy(SEXP error_xptr) {
+extern "C" SEXP RAdbcErrorProxy(SEXP error_xptr) {
   AdbcError* error = radbc_from_xptr<AdbcError>(error_xptr);
   const char* names[] = {"message", "vendor_code", "sqlstate", ""};
   SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
