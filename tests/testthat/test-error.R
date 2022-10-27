@@ -9,5 +9,3 @@ test_that("error allocator works", {
   expect_identical(err$vendor_code, 0L)
   expect_identical(err$sqlstate, as.raw(c(0x00, 0x00, 0x00, 0x00, 0x00)))
 })
-
-

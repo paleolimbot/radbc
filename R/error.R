@@ -16,7 +16,7 @@ str.radbc_error <- function(object, ...) {
   invisible(object)
 }
 
-# This is the list()-like interface to nanoarrow_array_stream that allows $ and [[
+# This is the list()-like interface that allows $ and [[
 # to make nice auto-complete when interacting in an IDE
 
 #' @export
