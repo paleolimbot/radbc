@@ -3,6 +3,12 @@ radbc_allocate_error <- function(shelter = NULL) {
   .Call(RAdbcAllocateError, shelter)
 }
 
+stop_for_error <- function(status, error) {
+  if (status != 0) {
+    stop(error$message)
+  }
+}
+
 #' @export
 print.radbc_error <- function(x, ...) {
   str(x, ...)

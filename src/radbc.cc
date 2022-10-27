@@ -49,7 +49,12 @@ static void finalize_database_xptr(SEXP database_xptr) {
 }
 
 extern "C" SEXP RAdbcDatabaseNew(SEXP driver_init_func_xptr) {
-  auto driver_init_func = reinterpret_cast<AdbcDriverInitFunc>(R_ExternalPtrAddrFn(driver_init_func_xptr));
+  auto driver_init_func =
+      reinterpret_cast<AdbcDriverInitFunc>(R_ExternalPtrAddrFn(driver_init_func_xptr));
+  if (!Rf_inherits(driver_init_func_xptr, "radbc_driver_init_func")) {
+    Rf_error("Expected external pointer with class '%s'", "radbc_driver_init_func");
+  }
+
   SEXP database_xptr = radbc_allocate_xptr<AdbcDatabase>();
   R_RegisterCFinalizer(database_xptr, &finalize_database_xptr);
 
@@ -59,7 +64,8 @@ extern "C" SEXP RAdbcDatabaseNew(SEXP driver_init_func_xptr) {
   radbc_global_error_stop(status, "RAdbcDatabaseNew()");
 
   radbc_global_error_reset();
-  status = AdbcDriverManagerDatabaseSetInitFunc(database, driver_init_func, &global_error_);
+  status =
+      AdbcDriverManagerDatabaseSetInitFunc(database, driver_init_func, &global_error_);
   radbc_global_error_stop(status, "RAdbcDatabaseNew()");
 
   return database_xptr;

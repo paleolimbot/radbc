@@ -9,31 +9,50 @@ static inline const char* radbc_xptr_class();
 
 template <>
 inline const char* radbc_xptr_class<AdbcError>() {
-    return "radbc_error";
+  return "radbc_error";
 }
 
 template <>
 inline const char* radbc_xptr_class<AdbcDriver>() {
-    return "radbc_driver";
+  return "radbc_driver";
 }
 
 template <>
 inline const char* radbc_xptr_class<AdbcDatabase>() {
-    return "radbc_database";
+  return "radbc_database";
 }
 
 template <>
 inline const char* radbc_xptr_class<AdbcConnection>() {
-    return "radbc_connection";
+  return "radbc_connection";
 }
 
 template <>
 inline const char* radbc_xptr_class<AdbcStatement>() {
-    return "adbc_statement";
+  return "adbc_statement";
+}
+
+template <>
+inline const char* radbc_xptr_class<ArrowArrayStream>() {
+  return "nanoarrow_array_stream";
+}
+
+template <>
+inline const char* radbc_xptr_class<ArrowArray>() {
+  return "nanoarrow_array";
+}
+
+template <>
+inline const char* radbc_xptr_class<ArrowSchema>() {
+  return "nanoarrow_schema";
 }
 
 template <typename T>
 static inline T* radbc_from_xptr(SEXP xptr) {
+  if (!Rf_inherits(xptr, radbc_xptr_class<T>())) {
+    Rf_error("Expected external pointer with class '%s'", radbc_xptr_class<T>());
+  }
+  
   T* ptr = reinterpret_cast<T*>(R_ExternalPtrAddr(xptr));
   if (ptr == nullptr) {
     Rf_error("Can't convert external pointer to NULL to T*");
