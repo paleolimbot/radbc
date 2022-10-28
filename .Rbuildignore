@@ -5,3 +5,4 @@
 ^\.clang-format$
 ^\.vscode$
 ^README\.Rmd$
+^\.github$
