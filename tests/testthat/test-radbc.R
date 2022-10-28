@@ -64,12 +64,16 @@ test_that("connection methods work for the void driver", {
 test_that("can initialize and release a statement", {
   db <- radbc_database_init(radbc_driver_void())
   con <- radbc_connection_init(db)
-  stmt <- radbc_statement_init(con)
+  stmt <- radbc_statement_init(con, c("some_key" = "some_value"))
   expect_s3_class(stmt, "adbc_statement")
   radbc_statement_release(stmt)
   expect_error(radbc_statement_release(stmt), "ADBC_STATUS_INVALID_STATE")
 })
 
 test_that("statement methods work for the void driver", {
+  db <- radbc_database_init(radbc_driver_void())
+  con <- radbc_connection_init(db)
+  stmt <- radbc_statement_init(con)
 
+  skip("TODO")
 })
