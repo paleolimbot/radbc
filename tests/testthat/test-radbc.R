@@ -13,3 +13,13 @@ test_that("can initialize and release a connection", {
   radbc_connection_release(con)
   expect_error(radbc_connection_release(con), "ADBC_STATUS_INVALID_STATE")
 })
+
+test_that("can initialize and release a statement", {
+  db <- radbc_database_init(radbc_driver_void())
+  con <- radbc_connection_init(db)
+  stmt <- radbc_statement_init(con)
+  expect_s3_class(stmt, "adbc_statement")
+  radbc_statement_release(stmt)
+  expect_error(radbc_statement_release(stmt), "ADBC_STATUS_INVALID_STATE")
+})
+

@@ -284,6 +284,15 @@ extern "C" SEXP RAdbcStatementNew(SEXP connection_xptr) {
   return statement_xptr;
 }
 
+extern "C" SEXP RAdbcStatementSetOption(SEXP statement_xptr, SEXP key_sexp,
+                                        SEXP value_sexp, SEXP error_xptr) {
+  auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
+  const char* key = radbc_as_const_char(key_sexp);
+  const char* value = radbc_as_const_char(value_sexp);
+  auto error = radbc_from_xptr<AdbcError>(error_xptr);
+  return radbc_wrap_status(AdbcStatementSetOption(statement, key, value, error));
+}
+
 extern "C" SEXP RAdbcStatementRelease(SEXP statement_xptr, SEXP error_xptr) {
   auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
   auto error = radbc_from_xptr<AdbcError>(error_xptr);
@@ -324,11 +333,6 @@ extern "C" SEXP RAdbcStatementBindStream(SEXP statement_xptr, SEXP stream_xptr,
 
 extern "C" SEXP RAdbcStatementGetParameterSchema(SEXP statement_xptr,
                                                  SEXP out_schema_xptr, SEXP error_xptr) {
-  return R_NilValue;
-}
-
-extern "C" SEXP RAdbcStatementSetOption(SEXP statement_xptr, SEXP key_sexp,
-                                        SEXP value_sexp, SEXP error_xptr) {
   return R_NilValue;
 }
 

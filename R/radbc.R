@@ -63,3 +63,31 @@ radbc_connection_release <- function(connection) {
   status <- .Call(RAdbcConnectionRelease, connection, error)
   stop_for_error(status, error)
 }
+
+radbc_statement_init <- function(connection, options = NULL) {
+  statement <- .Call(RAdbcStatementNew, connection)
+  radbc_statement_set_options(statement, options)
+  statement
+}
+
+radbc_statement_set_options <- function(statement, options) {
+  options <- key_value_options(options)
+  error <- radbc_allocate_error()
+  for (i in seq_along(options)) {
+    status <- .Call(
+      RAdbcStatementSetOption,
+      statement,
+      names(options)[i],
+      options[i],
+      error
+    )
+    stop_for_error(status, error)
+  }
+  invisible(statement)
+}
+
+radbc_statement_release <- function(statement) {
+  error <- radbc_allocate_error()
+  status <- .Call(RAdbcStatementRelease, statement, error)
+  stop_for_error(status, error)
+}
