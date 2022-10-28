@@ -301,43 +301,82 @@ extern "C" SEXP RAdbcStatementRelease(SEXP statement_xptr, SEXP error_xptr) {
   return radbc_wrap_status(status);
 }
 
-extern "C" SEXP RAdbcStatementExecuteQuery(SEXP statement_xptr, SEXP out_xptr,
-                                           SEXP error_xptr) {
-  // rows affected?
-  return R_NilValue;
-}
-
-extern "C" SEXP RAdbcStatementPrepare(SEXP statement_xptr, SEXP error_xptr) {
-  return R_NilValue;
-}
-
 extern "C" SEXP RAdbcStatementSetSqlQuery(SEXP statement_xptr, SEXP query_sexp,
                                           SEXP error_xptr) {
-  return R_NilValue;
+  auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
+  const char* query = radbc_as_const_char(query_sexp);
+  auto error = radbc_from_xptr<AdbcError>(error_xptr);
+
+  int status = AdbcStatementSetSqlQuery(statement, query, error);
+  return radbc_wrap_status(status);
 }
 
 extern "C" SEXP RAdbcStatementSetSubstraitPlan(SEXP statement_xptr, SEXP plan_sexp,
                                                SEXP error_xptr) {
-  return R_NilValue;
+  auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
+  auto plan = reinterpret_cast<uint8_t*>(RAW(plan_sexp));
+  size_t plan_length = Rf_xlength(plan_sexp);
+  auto error = radbc_from_xptr<AdbcError>(error_xptr);
+
+  int status = AdbcStatementSetSubstraitPlan(statement, plan, plan_length, error);
+  return radbc_wrap_status(status);
 }
 
-extern "C" SEXP RAdbcStatementBind(SEXP statement_xptr, SEXP values_xptr,
-                                   SEXP schema_xptr, SEXP error_xptr) {
-  return R_NilValue;
-}
-
-extern "C" SEXP RAdbcStatementBindStream(SEXP statement_xptr, SEXP stream_xptr,
-                                         SEXP error_xptr) {
-  return R_NilValue;
+extern "C" SEXP RAdbcStatementPrepare(SEXP statement_xptr, SEXP error_xptr) {
+  auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
+  auto error = radbc_from_xptr<AdbcError>(error_xptr);
+  int status = AdbcStatementPrepare(statement, error);
+  return radbc_wrap_status(status);
 }
 
 extern "C" SEXP RAdbcStatementGetParameterSchema(SEXP statement_xptr,
                                                  SEXP out_schema_xptr, SEXP error_xptr) {
-  return R_NilValue;
+  auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
+  auto out_schema = radbc_from_xptr<ArrowSchema>(out_schema_xptr);
+  auto error = radbc_from_xptr<AdbcError>(error_xptr);
+
+  int status = AdbcStatementGetParameterSchema(statement, out_schema, error);
+  return radbc_wrap_status(status);
+}
+
+extern "C" SEXP RAdbcStatementBind(SEXP statement_xptr, SEXP values_xptr,
+                                   SEXP schema_xptr, SEXP error_xptr) {
+  auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
+  auto values = radbc_from_xptr<ArrowArray>(values_xptr);
+  auto schema = radbc_from_xptr<ArrowSchema>(schema_xptr);
+  auto error = radbc_from_xptr<AdbcError>(error_xptr);
+
+  int status = AdbcStatementBind(statement, values, schema, error);
+  return radbc_wrap_status(status);
+}
+
+extern "C" SEXP RAdbcStatementBindStream(SEXP statement_xptr, SEXP stream_xptr,
+                                         SEXP error_xptr) {
+  auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
+  auto stream = radbc_from_xptr<ArrowArrayStream>(stream_xptr);
+  auto error = radbc_from_xptr<AdbcError>(error_xptr);
+
+  int status = AdbcStatementBindStream(statement, stream, error);
+  return radbc_wrap_status(status);
+}
+
+extern "C" SEXP RAdbcStatementExecuteQuery(SEXP statement_xptr, SEXP out_stream_xptr,
+                                           SEXP error_xptr) {
+  auto statement = radbc_from_xptr<AdbcStatement>(statement_xptr);
+  auto out_stream = radbc_from_xptr<ArrowArrayStream>(out_stream_xptr);
+  auto error = radbc_from_xptr<AdbcError>(error_xptr);
+  int64_t rows_affected = 0;
+  int status = AdbcStatementExecuteQuery(statement, out_stream, &rows_affected, error);
+
+  const char* names[] = {"status", "rows_affected", ""};
+  SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
+  SET_VECTOR_ELT(result, 0, radbc_wrap_status(status));
+  SET_VECTOR_ELT(result, 1, Rf_ScalarReal(rows_affected));
+  UNPROTECT(1);
+  return result;
 }
 
 extern "C" SEXP RAdbcStatementExecutePartitions(SEXP statement_xptr, SEXP out_schema_xptr,
                                                 SEXP partitions_xptr, SEXP error_xptr) {
-  // rows affected?
-  return R_NilValue;
+  return radbc_wrap_status(ADBC_STATUS_NOT_IMPLEMENTED);
 }
