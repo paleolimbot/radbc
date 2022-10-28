@@ -50,14 +50,14 @@ test_that("connection methods work for the void driver", {
     "ADBC_STATUS_NOT_IMPLEMENTED"
   )
 
-  expect_error(
+  expect_identical(
     radbc_connection_commit(con),
-    "ADBC_STATUS_NOT_IMPLEMENTED"
+    con
   )
 
-  expect_error(
+  expect_identical(
     radbc_connection_rollback(con),
-    "ADBC_STATUS_NOT_IMPLEMENTED"
+    con
   )
 })
 

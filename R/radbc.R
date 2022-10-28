@@ -64,6 +64,89 @@ radbc_connection_release <- function(connection) {
   stop_for_error(status, error)
 }
 
+radbc_connection_get_info <- function(connection, info_codes) {
+  error <- radbc_allocate_error()
+  out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
+  status <- .Call(RAdbcConnectionGetInfo, connection, info_codes, out_stream, error)
+  stop_for_error(status, error)
+
+  out_stream
+}
+
+radbc_connection_get_objects <- function(connection, depth, catalog, db_schema,
+                                         table_name, table_type, column_name) {
+  error <- radbc_allocate_error()
+  out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
+  status <- .Call(
+    RAdbcConnectionGetObjects,
+    connection,
+    depth,
+    catalog,
+    db_schema,
+    table_name,
+    table_type,
+    column_name,
+    out_stream,
+    error
+  )
+  stop_for_error(status, error)
+
+  out_stream
+}
+
+radbc_connection_get_table_schema <- function(connection, catalog, db_schema, table_name) {
+  error <- radbc_allocate_error()
+  out_schema <- nanoarrow::nanoarrow_allocate_schema()
+  status <- .Call(
+    RAdbcConnectionGetTableSchema,
+    connection,
+    catalog,
+    db_schema,
+    table_name,
+    out_schema,
+    error
+  )
+  stop_for_error(status, error)
+
+  out_stream
+}
+
+radbc_connection_get_table_types <- function(connection) {
+  error <- radbc_allocate_error()
+  out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
+  status <- .Call(RAdbcConnectionGetTableTypes, connection, out_stream, error)
+  stop_for_error(status, error)
+
+  out_stream
+}
+
+radbc_connection_read_partition <- function(connection, serialized_partition) {
+  error <- radbc_allocate_error()
+  out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
+  status <- .Call(
+    RAdbcConnectionReadPartition,
+    connection,
+    serialized_partition,
+    out_stream,
+    error
+  )
+  stop_for_error(status, error)
+
+  out_stream
+}
+
+radbc_connection_commit <- function(connection) {
+  error <- radbc_allocate_error()
+  .Call(RAdbcConnectionCommit, connection, error)
+  invisible(connection)
+}
+
+radbc_connection_rollback <- function(connection) {
+  error <- radbc_allocate_error()
+  .Call(RAdbcConnectionRollback, connection, error)
+  invisible(connection)
+}
+
 radbc_statement_init <- function(connection, options = NULL) {
   statement <- .Call(RAdbcStatementNew, connection)
   radbc_statement_set_options(statement, options)
