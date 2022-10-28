@@ -121,6 +121,8 @@ extern "C" SEXP RAdbcConnectionNew() {
   radbc_global_error_reset();
   int status = AdbcConnectionNew(connection, &global_error_);
   radbc_global_error_stop(status, "RAdbcConnectionNew()");
+
+  UNPROTECT(1);
   return connection_xptr;
 }
 
@@ -275,6 +277,8 @@ extern "C" SEXP RAdbcStatementNew(SEXP connection_xptr) {
   radbc_global_error_reset();
   int status = AdbcStatementNew(connection, statement, &global_error_);
   radbc_global_error_stop(status, "RAdbcStatementNew()");
+
+  R_SetExternalPtrProtected(statement_xptr, connection_xptr);
 
   UNPROTECT(1);
   return statement_xptr;

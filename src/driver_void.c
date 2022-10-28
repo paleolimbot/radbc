@@ -44,6 +44,7 @@ static AdbcStatusCode VoidDriverRelease(struct AdbcDriver* driver,
   }
 
   free(driver->private_data);
+  driver->private_data = NULL;
   return ADBC_STATUS_OK;
 }
 
@@ -69,7 +70,7 @@ static AdbcStatusCode VoidDatabaseInit(struct AdbcDatabase* database,
 static AdbcStatusCode VoidDatabaseSetOption(struct AdbcDatabase* database,
                                             const char* key, const char* value,
                                             struct AdbcError* error) {
-  return ADBC_STATUS_NOT_IMPLEMENTED;
+  return ADBC_STATUS_OK;
 }
 
 static AdbcStatusCode VoidDatabaseRelease(struct AdbcDatabase* database,
@@ -80,6 +81,7 @@ static AdbcStatusCode VoidDatabaseRelease(struct AdbcDatabase* database,
   }
 
   free(database->private_data);
+  database->private_data = NULL;
   return ADBC_STATUS_OK;
 }
 
@@ -118,7 +120,7 @@ static AdbcStatusCode VoidConnectionGetTableTypes(struct AdbcConnection* connect
 static AdbcStatusCode VoidConnectionInit(struct AdbcConnection* connection,
                                          struct AdbcDatabase* database,
                                          struct AdbcError* error) {
-  return ADBC_STATUS_NOT_IMPLEMENTED;
+  return ADBC_STATUS_OK;
 }
 
 static AdbcStatusCode VoidConnectionNew(struct AdbcConnection* connection,
@@ -151,6 +153,7 @@ static AdbcStatusCode VoidConnectionRelease(struct AdbcConnection* connection,
   }
 
   free(connection->private_data);
+  connection->private_data = NULL;
   return ADBC_STATUS_OK;
 }
 
@@ -162,7 +165,7 @@ static AdbcStatusCode VoidConnectionRollback(struct AdbcConnection* connection,
 static AdbcStatusCode VoidConnectionSetOption(struct AdbcConnection* connection,
                                               const char* key, const char* value,
                                               struct AdbcError* error) {
-  return ADBC_STATUS_NOT_IMPLEMENTED;
+  return ADBC_STATUS_OK;
 }
 
 static AdbcStatusCode VoidStatementBind(struct AdbcStatement* statement,
@@ -227,13 +230,14 @@ static AdbcStatusCode VoidStatementRelease(struct AdbcStatement* statement,
   }
 
   free(statement->private_data);
+  statement->private_data = NULL;
   return ADBC_STATUS_OK;
 }
 
 static AdbcStatusCode VoidStatementSetOption(struct AdbcStatement* statement,
                                              const char* key, const char* value,
                                              struct AdbcError* error) {
-  return ADBC_STATUS_NOT_IMPLEMENTED;
+  return ADBC_STATUS_OK;
 }
 
 static AdbcStatusCode VoidStatementSetSqlQuery(struct AdbcStatement* statement,
