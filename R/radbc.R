@@ -108,7 +108,7 @@ radbc_connection_get_table_schema <- function(connection, catalog, db_schema, ta
   )
   stop_for_error(status, error)
 
-  out_stream
+  out_schema
 }
 
 radbc_connection_get_table_types <- function(connection) {
@@ -173,4 +173,58 @@ radbc_statement_release <- function(statement) {
   error <- radbc_allocate_error()
   status <- .Call(RAdbcStatementRelease, statement, error)
   stop_for_error(status, error)
+}
+
+radbc_statement_set_sql_query <- function(statement, query) {
+  error <- radbc_allocate_error()
+  status <- .Call(RAdbcStatementSetSqlQuery, statement, query, error)
+  stop_for_error(status, error)
+  invisible(statement)
+}
+
+radbc_statement_set_substrait_plan <- function(statement, plan) {
+  error <- radbc_allocate_error()
+  status <- .Call(RAdbcStatementSetSubstraitPlan, statement, plan, error)
+  stop_for_error(status, error)
+  invisible(statement)
+}
+
+radbc_statement_prepare <- function(statement) {
+  error <- radbc_allocate_error()
+  status <- .Call(RAdbcStatementPrepare, statement, error)
+  stop_for_error(status, error)
+  invisible(statement)
+}
+
+radbc_statement_get_parameter_schema <- function(statement) {
+  error <- radbc_allocate_error()
+  schema <- nanoarrow::nanoarrow_allocate_schema()
+  status <- .Call(RAdbcStatementGetParameterSchema, statement, schema, error)
+  stop_for_error(status, error)
+  schema
+}
+
+radbc_statement_bind <- function(statement, values, schema = NULL) {
+  values <- nanoarrow::as_nanoarrow_array(values, schema = schema)
+  schema <- nanoarrow::infer_nanoarrow_schema(values)
+  error <- radbc_allocate_error()
+  status <- .Call(RAdbcStatementBind, statement, values, schema, error)
+  stop_for_error(status, error)
+  invisible(statement)
+}
+
+radbc_statement_bind_stream <- function(statement, stream, schema = NULL) {
+  stream <- nanoarrow::as_nanoarrow_array_stream(stream, schema = schema)
+  error <- radbc_allocate_error()
+  status <- .Call(RAdbcStatementBindStream, statement, stream, error)
+  stop_for_error(status, error)
+  invisible(statement)
+}
+
+radbc_statement_execute_query <- function(statement) {
+  error <- radbc_allocate_error()
+  out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
+  result <- .Call(RAdbcStatementExecuteQuery, statement, out_stream, error)
+  stop_for_error(result$status, error)
+  out_stream
 }

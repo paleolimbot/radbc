@@ -75,5 +75,39 @@ test_that("statement methods work for the void driver", {
   con <- radbc_connection_init(db)
   stmt <- radbc_statement_init(con)
 
-  skip("TODO")
+  expect_error(
+    radbc_statement_set_sql_query(stmt, "some query"),
+    "ADBC_STATUS_NOT_IMPLEMENTED"
+  )
+
+  expect_error(
+    radbc_statement_set_substrait_plan(stmt, charToRaw("some plan")),
+    "ADBC_STATUS_NOT_IMPLEMENTED"
+  )
+
+  expect_error(
+    radbc_statement_prepare(stmt),
+    "ADBC_STATUS_NOT_IMPLEMENTED"
+  )
+
+  expect_error(
+    radbc_statement_get_parameter_schema(stmt),
+    "ADBC_STATUS_NOT_IMPLEMENTED"
+  )
+
+  struct_array <- nanoarrow::as_nanoarrow_array(data.frame(x = 1:5))
+  expect_error(
+    radbc_statement_bind(stmt, struct_array),
+    "ADBC_STATUS_NOT_IMPLEMENTED"
+  )
+
+  expect_error(
+    radbc_statement_bind_stream(stmt, nanoarrow::nanoarrow_allocate_array_stream()),
+    "ADBC_STATUS_NOT_IMPLEMENTED"
+  )
+
+  expect_error(
+    radbc_statement_execute_query(stmt),
+    "ADBC_STATUS_NOT_IMPLEMENTED"
+  )
 })
