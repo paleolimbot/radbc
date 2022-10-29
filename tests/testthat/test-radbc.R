@@ -111,3 +111,47 @@ test_that("statement methods work for the void driver", {
     "ADBC_STATUS_NOT_IMPLEMENTED"
   )
 })
+
+test_that("invalid parameter types generate errors", {
+  db <- radbc_database_init(radbc_driver_void())
+  con <- radbc_connection_init(db)
+  stmt <- radbc_statement_init(con)
+
+  expect_error(
+    radbc_database_init(NULL),
+    "Expected external pointer with class 'radbc_driver_init_func'"
+  )
+
+  expect_error(
+    radbc_statement_set_sql_query(con, "some query"),
+    "Expected external pointer with class 'adbc_statement'"
+  )
+
+  expect_error(
+    radbc_connection_get_objects(
+      con, NULL,
+      "catalog", "db_schema",
+      "table_name", "table_type", "column_name"
+    ),
+    "Expected integer(1) or double(1)",
+    fixed = TRUE
+  )
+
+  expect_error(
+    radbc_statement_set_sql_query(stmt, NULL),
+    "Expected character(1)",
+    fixed = TRUE
+  )
+
+  expect_error(
+    radbc_statement_set_sql_query(stmt, NA_character_),
+    "Can't convert NA_character_"
+  )
+
+  # (makes a NULL xptr)
+  stmt2 <- unserialize(serialize(stmt, NULL))
+  expect_error(
+    radbc_statement_set_sql_query(stmt2, "some query"),
+    "Can't convert external pointer to NULL to T*"
+  )
+})
