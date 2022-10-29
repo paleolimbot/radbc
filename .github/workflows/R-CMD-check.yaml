@@ -39,6 +39,9 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: install nanoarrow
+        run: R -e 'install.packages("remotes"); remotes::install_github("apache/arrow-nanoarrow/r")'
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
