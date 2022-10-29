@@ -52,7 +52,7 @@ static inline T* radbc_from_xptr(SEXP xptr) {
   if (!Rf_inherits(xptr, radbc_xptr_class<T>())) {
     Rf_error("Expected external pointer with class '%s'", radbc_xptr_class<T>());
   }
-  
+
   T* ptr = reinterpret_cast<T*>(R_ExternalPtrAddr(xptr));
   if (ptr == nullptr) {
     Rf_error("Can't convert external pointer to NULL to T*");
@@ -69,7 +69,17 @@ static inline SEXP radbc_allocate_xptr(SEXP shelter_sexp = R_NilValue) {
 
   memset(ptr, 0, sizeof(T));
   SEXP xptr = PROTECT(R_MakeExternalPtr(ptr, R_NilValue, shelter_sexp));
-  Rf_setAttrib(xptr, R_ClassSymbol, Rf_mkString(radbc_xptr_class<T>()));
+  SEXP xptr_class = PROTECT(Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(xptr_class, 0, Rf_mkChar(radbc_xptr_class<T>()));
+  SET_STRING_ELT(xptr_class, 1, Rf_mkChar("radbc_xptr"));
+  Rf_setAttrib(xptr, R_ClassSymbol, xptr_class);
+  UNPROTECT(1);
+
+  SEXP new_env_call = PROTECT(Rf_lang1(Rf_install("new_env")));
+  SEXP new_env = PROTECT(Rf_eval(new_env_call, R_FindNamespace(Rf_mkString("radbc"))));
+  R_SetExternalPtrTag(xptr, new_env);
+  UNPROTECT(2);
+
   UNPROTECT(1);
   return xptr;
 }

@@ -25,3 +25,15 @@ test_that("key_value_options works", {
     "must be named"
   )
 })
+
+test_that("external pointer embedded environment works", {
+  db <- radbc_database_init(radbc_driver_void())
+  expect_identical(names(db), character())
+  expect_identical(length(db), 0L)
+
+  db$key <- "value"
+  expect_identical(db$key, "value")
+
+  db[["key"]] <- "value2"
+  expect_identical(db[["key"]], "value2")
+})
