@@ -29,6 +29,7 @@ radbc_database_init.default <- function(driver, ...) {
 #' @export
 radbc_database_init_default <- function(driver, options, subclass = character()) {
   database <- .Call(RAdbcDatabaseNew, driver$driver_init_func)
+  database$driver <- driver
   radbc_database_set_options(database, options)
 
   error <- radbc_allocate_error()
@@ -93,6 +94,7 @@ radbc_connection_init.default <- function(database, ...) {
 #' @export
 radbc_connection_init_default <- function(database, options = NULL, subclass = character()) {
   connection <- .Call(RAdbcConnectionNew)
+  connection$database <- database
   error <- radbc_allocate_error()
   status <- .Call(RAdbcConnectionInit, connection, database, error)
   stop_for_error(status, error)
@@ -241,6 +243,7 @@ radbc_statement_init.default <- function(connection, ...) {
 #' @export
 radbc_statement_init_default <- function(connection, options = NULL, subclass = character()) {
   statement <- .Call(RAdbcStatementNew, connection)
+  statement$connection <- connection
   radbc_statement_set_options(statement, options)
   class(statement) <- c(subclass, class(statement))
   statement

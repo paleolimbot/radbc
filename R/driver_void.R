@@ -20,7 +20,14 @@
 #' radbc_driver_void()
 #'
 radbc_driver_void <- function() {
-  radbc_driver(.Call(RAdbcVoidDriverInitFunc), subclass = "radbc_driver_void")
+  if (is.null(internal_driver_env$void)) {
+    internal_driver_env$void <- radbc_driver(
+      .Call(RAdbcVoidDriverInitFunc),
+      subclass = "radbc_driver_void"
+    )
+  }
+
+  internal_driver_env$void
 }
 
 #' @rdname radbc_driver_void
@@ -29,10 +36,12 @@ radbc_driver <- function(driver_init_func, ...,  subclass = character()) {
   stopifnot(inherits(driver_init_func, "radbc_driver_init_func"))
 
   structure(
-    list(driver_init_func = driver_init_func, ...),
+    as.environment(list(driver_init_func = driver_init_func, ...)),
     class = c(subclass, "radbc_driver")
   )
 }
+
+internal_driver_env <- new.env(parent = emptyenv())
 
 #' @export
 print.radbc_driver <- function(x, ...) {
