@@ -9,7 +9,7 @@
 \usage{
 radbc_database_init(driver, ...)
 
-radbc_database_init_default(driver, options)
+radbc_database_init_default(driver, options, subclass = character())
 
 radbc_database_set_options(database, options)
 
@@ -23,6 +23,11 @@ named values that are converted to strings.}
 
 \item{options}{A named \code{character()} or \code{list()} whose values are converted
 to strings.}
+
+\item{subclass}{An extended class for an object so that drivers can specify
+finer-grained control over behaviour at the R level.}
+
+\item{database}{An \link[=radbc_database_init]{ADBC database}.}
 }
 \value{
 An object of class radbc_database

@@ -2,10 +2,13 @@
 #' Create an ADBC Database
 #'
 #' @param driver An radbc_driver
+#' @param database An [ADBC database][radbc_database_init].
 #' @param ... Driver-specific options. For the default method, these are
 #'   named values that are converted to strings.
 #' @param options A named `character()` or `list()` whose values are converted
 #'   to strings.
+#' @param subclass An extended class for an object so that drivers can specify
+#'   finer-grained control over behaviour at the R level.
 #'
 #' @return An object of class radbc_database
 #' @export
@@ -24,13 +27,14 @@ radbc_database_init.default <- function(driver, ...) {
 
 #' @rdname radbc_database_init
 #' @export
-radbc_database_init_default <- function(driver, options) {
-  database <- .Call(RAdbcDatabaseNew, driver)
+radbc_database_init_default <- function(driver, options, subclass = character()) {
+  database <- .Call(RAdbcDatabaseNew, driver$driver_init_func)
   radbc_database_set_options(database, options)
 
   error <- radbc_allocate_error()
   status <- .Call(RAdbcDatabaseInit, database, error)
   stop_for_error(status, error)
+  class(database) <- c(subclass, class(database))
   database
 }
 
