@@ -65,3 +65,16 @@ names.radbc_xptr <- function(x) {
   x
 }
 
+#' @export
+print.radbc_xptr <- function(x, ...) {
+  str(x, ...)
+}
+
+#' @export
+str.radbc_xptr <- function(object, ...) {
+  cat(sprintf("<%s> %s ", class(object)[1], format(object)))
+  env_proxy <- as.list(xptr_env(object))
+  env_proxy$options <- as.list(env_proxy$options)
+  str(env_proxy, ...)
+  invisible(object)
+}

@@ -50,8 +50,13 @@ print.radbc_driver <- function(x, ...) {
 
 #' @importFrom utils str
 #' @export
-str.adbc_driver <- function(object, ...) {
+str.radbc_driver <- function(object, ...) {
   cat(sprintf("<%s> ", class(object)[1]))
-  str(object, ...)
+
+  fields <- names(object)
+  object_lst <- Map("[[", list(object), fields)
+  names(object_lst) <- fields
+
+  str(object_lst, ...)
   invisible(object)
 }
