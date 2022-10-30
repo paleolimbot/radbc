@@ -1,5 +1,30 @@
 
-radbc_database_init <- function(driver, options = NULL) {
+#' Create an ADBC Database
+#'
+#' @param driver An radbc_driver
+#' @param ... Driver-specific options. For the default method, these are
+#'   named values that are converted to strings.
+#' @param options A named `character()` or `list()` whose values are converted
+#'   to strings.
+#'
+#' @return An object of class radbc_database
+#' @export
+#'
+#' @examples
+#' radbc_database_init(radbc_driver_void())
+#'
+radbc_database_init <- function(driver, ...) {
+  UseMethod("radbc_database_init")
+}
+
+#' @export
+radbc_database_init.default <- function(driver, ...) {
+  radbc_database_init_default(driver, list(...))
+}
+
+#' @rdname radbc_database_init
+#' @export
+radbc_database_init_default <- function(driver, options) {
   database <- .Call(RAdbcDatabaseNew, driver)
   radbc_database_set_options(database, options)
 
@@ -9,22 +34,29 @@ radbc_database_init <- function(driver, options = NULL) {
   database
 }
 
+#' @rdname radbc_database_init
+#' @export
 radbc_database_set_options <- function(database, options) {
   options <- key_value_options(options)
   error <- radbc_allocate_error()
   for (i in seq_along(options)) {
+    key <- names(options)[i]
+    value <- options[i]
     status <- .Call(
       RAdbcDatabaseSetOption,
       database,
-      names(options)[i],
-      options[i],
+      key,
+      value,
       error
     )
     stop_for_error(status, error)
+    xptr_add_option(database, key, value)
   }
   invisible(database)
 }
 
+#' @rdname radbc_database_init
+#' @export
 radbc_database_release <- function(database) {
   error <- radbc_allocate_error()
   status <- .Call(RAdbcDatabaseRelease, database, error)

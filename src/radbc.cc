@@ -96,6 +96,7 @@ extern "C" SEXP RAdbcDatabaseInit(SEXP database_xptr, SEXP error_xptr) {
 extern "C" SEXP RAdbcDatabaseRelease(SEXP database_xptr, SEXP error_xptr) {
   auto database = radbc_from_xptr<AdbcDatabase>(database_xptr);
   auto error = radbc_from_xptr<AdbcError>(error_xptr);
+  R_SetExternalPtrTag(database_xptr, R_NilValue);
   return radbc_wrap_status(AdbcDatabaseRelease(database, error));
 }
 

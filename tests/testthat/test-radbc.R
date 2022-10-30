@@ -1,7 +1,8 @@
 
 test_that("can initialize and release a database", {
-  db <- radbc_database_init(radbc_driver_void(), c("some_key" = "some_value"))
+  db <- radbc_database_init(radbc_driver_void(), some_key = "some_value")
   expect_s3_class(db, "radbc_database")
+  expect_identical(db$options$some_key, "some_value")
   radbc_database_release(db)
   expect_error(radbc_database_release(db), "ADBC_STATUS_INVALID_STATE")
 })
