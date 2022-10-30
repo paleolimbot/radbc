@@ -1,8 +1,8 @@
 
-#' Create an ADBC Database
+#' Databases
 #'
-#' @param driver An radbc_driver
-#' @param database An [ADBC database][radbc_database_init].
+#' @param driver An [radbc_driver()].
+#' @param database An [radbc_database][radbc_database_init].
 #' @param ... Driver-specific options. For the default method, these are
 #'   named values that are converted to strings.
 #' @param options A named `character()` or `list()` whose values are converted
@@ -65,39 +65,71 @@ radbc_database_release <- function(database) {
   error <- radbc_allocate_error()
   status <- .Call(RAdbcDatabaseRelease, database, error)
   stop_for_error(status, error)
+  invisible(database)
 }
 
-radbc_connection_init <- function(database, options = NULL) {
+#' Connections
+#'
+#' @inheritParams radbc_database_init
+#' @param connection An [radbc_connection][radbc_connection_init]
+#'
+#' @return An object of class 'radbc_connection'
+#' @export
+#'
+#' @examples
+#' db <- radbc_database_init(radbc_driver_void())
+#' radbc_connection_init(db)
+#'
+radbc_connection_init <- function(database, ...) {
+  UseMethod("radbc_connection_init")
+}
+
+#' @export
+radbc_connection_init.default <- function(database, ...) {
+  radbc_connection_init_default(database, list(...))
+}
+
+#' @rdname radbc_connection_init
+#' @export
+radbc_connection_init_default <- function(database, options = NULL, subclass = character()) {
   connection <- .Call(RAdbcConnectionNew)
   error <- radbc_allocate_error()
   status <- .Call(RAdbcConnectionInit, connection, database, error)
   stop_for_error(status, error)
 
   radbc_connection_set_options(connection, options)
-
+  class(connection) <- c(subclass, class(connection))
   connection
 }
 
+#' @rdname radbc_connection_init
+#' @export
 radbc_connection_set_options <- function(connection, options) {
   options <- key_value_options(options)
   error <- radbc_allocate_error()
   for (i in seq_along(options)) {
+    key <- names(options)[i]
+    value <- options[i]
     status <- .Call(
       RAdbcConnectionSetOption,
       connection,
-      names(options)[i],
-      options[i],
+      key,
+      value,
       error
     )
     stop_for_error(status, error)
+    xptr_add_option(connection, key, value)
   }
   invisible(connection)
 }
 
+#' @rdname radbc_connection_init
+#' @export
 radbc_connection_release <- function(connection) {
   error <- radbc_allocate_error()
   status <- .Call(RAdbcConnectionRelease, connection, error)
   stop_for_error(status, error)
+  invisible(connection)
 }
 
 radbc_connection_get_info <- function(connection, info_codes) {
@@ -183,32 +215,65 @@ radbc_connection_rollback <- function(connection) {
   invisible(connection)
 }
 
-radbc_statement_init <- function(connection, options = NULL) {
+#' Statements
+#'
+#' @inheritParams radbc_connection_init
+#' @param statement An [radbc_statement][radbc_statement_init]
+#'
+#' @return An object of class 'radbc_statement'
+#' @export
+#'
+#' @examples
+#' db <- radbc_database_init(radbc_driver_void())
+#' con <- radbc_connection_init(db)
+#' radbc_statement_init(con)
+#'
+radbc_statement_init <- function(connection, ...) {
+  UseMethod("radbc_statement_init")
+}
+
+#' @export
+radbc_statement_init.default <- function(connection, ...) {
+  radbc_statement_init_default(connection, list(...))
+}
+
+#' @rdname radbc_statement_init
+#' @export
+radbc_statement_init_default <- function(connection, options = NULL, subclass = character()) {
   statement <- .Call(RAdbcStatementNew, connection)
   radbc_statement_set_options(statement, options)
+  class(statement) <- c(subclass, class(statement))
   statement
 }
 
+#' @rdname radbc_statement_init
+#' @export
 radbc_statement_set_options <- function(statement, options) {
   options <- key_value_options(options)
   error <- radbc_allocate_error()
   for (i in seq_along(options)) {
+    key <- names(options)[i]
+    value <- options[i]
     status <- .Call(
       RAdbcStatementSetOption,
       statement,
-      names(options)[i],
-      options[i],
+      key,
+      value,
       error
     )
     stop_for_error(status, error)
+    xptr_add_option(statement, key, value)
   }
   invisible(statement)
 }
 
+#' @rdname radbc_statement_init
+#' @export
 radbc_statement_release <- function(statement) {
   error <- radbc_allocate_error()
   status <- .Call(RAdbcStatementRelease, statement, error)
   stop_for_error(status, error)
+  invisible(statement)
 }
 
 radbc_statement_set_sql_query <- function(statement, query) {

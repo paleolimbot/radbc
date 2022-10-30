@@ -5,7 +5,7 @@
 \alias{radbc_database_init_default}
 \alias{radbc_database_set_options}
 \alias{radbc_database_release}
-\title{Create an ADBC Database}
+\title{Databases}
 \usage{
 radbc_database_init(driver, ...)
 
@@ -16,7 +16,7 @@ radbc_database_set_options(database, options)
 radbc_database_release(database)
 }
 \arguments{
-\item{driver}{An radbc_driver}
+\item{driver}{An \code{\link[=radbc_driver]{radbc_driver()}}.}
 
 \item{...}{Driver-specific options. For the default method, these are
 named values that are converted to strings.}
@@ -27,13 +27,13 @@ to strings.}
 \item{subclass}{An extended class for an object so that drivers can specify
 finer-grained control over behaviour at the R level.}
 
-\item{database}{An \link[=radbc_database_init]{ADBC database}.}
+\item{database}{An \link[=radbc_database_init]{radbc_database}.}
 }
 \value{
 An object of class radbc_database
 }
 \description{
-Create an ADBC Database
+Databases
 }
 \examples{
 radbc_database_init(radbc_driver_void())
