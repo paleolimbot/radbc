@@ -266,7 +266,7 @@ static AdbcStatusCode MonkeyStatementSetOption(struct AdbcStatement* statement,
 static AdbcStatusCode MonkeyStatementSetSqlQuery(struct AdbcStatement* statement,
                                                  const char* query,
                                                  struct AdbcError* error) {
-  return ADBC_STATUS_NOT_IMPLEMENTED;
+  return ADBC_STATUS_OK;
 }
 
 static AdbcStatusCode MonkeyDriverInitFunc(int version, void* raw_driver,

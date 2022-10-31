@@ -1,5 +1,5 @@
 
-test_that("multiplication works", {
+test_that("the monkey driver sees, and the monkey driver does", {
   db <- radbc_database_init(radbc_driver_monkey())
   expect_s3_class(db, "radbc_database_monkey")
   con <- radbc_connection_init(db)
