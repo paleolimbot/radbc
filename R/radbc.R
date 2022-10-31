@@ -320,6 +320,36 @@ radbc_statement_release <- function(statement) {
   invisible(statement)
 }
 
+
+#' Statement methods
+#'
+#' @inheritParams radbc_statement_init
+#' @param query An SQL query as a string
+#' @param plan A raw vector representation of a serialized Substrait plan.
+#' @param values A [nanoarrow_array][nanoarrow::as_nanoarrow_array] or object
+#'   that can be coerced to one.
+#' @param stream A [nanoarrow_array_stream][nanoarrow::as_nanoarrow_array_stream]
+#'   or object that can be coerced to one.
+#' @param schema A [nanoarrow_schema][nanoarrow::as_nanoarrow_schema] or object
+#'   that can be coerced to one.
+#'
+#' @return
+#'   - `radbc_statement_set_sql_query()`, `radbc_statement_set_substrait_plan()`,
+#'     `radbc_statement_prepare()`, `radbc_statement_bind()`,
+#'     `radbc_statement_bind_stream()`, and `radbc_statement_execute_query()`
+#'     return `statement`, invisibly.
+#'   - `radbc_statement_get_parameter_schema()` returns a
+#'     [nanoarrow_schema][nanoarrow::as_nanoarrow_schema].
+#'
+#' @export
+#'
+#' @examples
+#' db <- radbc_database_init(radbc_driver_void())
+#' con <- radbc_connection_init(db)
+#' stmt <- radbc_statement_init(con)
+#' # (not implemented by the void driver)
+#' try(radbc_statement_set_sql_query(stmt, "some query"))
+#'
 radbc_statement_set_sql_query <- function(statement, query) {
   error <- radbc_allocate_error()
   status <- .Call(RAdbcStatementSetSqlQuery, statement, query, error)
@@ -327,6 +357,8 @@ radbc_statement_set_sql_query <- function(statement, query) {
   invisible(statement)
 }
 
+#' @rdname radbc_statement_set_sql_query
+#' @export
 radbc_statement_set_substrait_plan <- function(statement, plan) {
   error <- radbc_allocate_error()
   status <- .Call(RAdbcStatementSetSubstraitPlan, statement, plan, error)
@@ -334,6 +366,8 @@ radbc_statement_set_substrait_plan <- function(statement, plan) {
   invisible(statement)
 }
 
+#' @rdname radbc_statement_set_sql_query
+#' @export
 radbc_statement_prepare <- function(statement) {
   error <- radbc_allocate_error()
   status <- .Call(RAdbcStatementPrepare, statement, error)
@@ -341,6 +375,8 @@ radbc_statement_prepare <- function(statement) {
   invisible(statement)
 }
 
+#' @rdname radbc_statement_set_sql_query
+#' @export
 radbc_statement_get_parameter_schema <- function(statement) {
   error <- radbc_allocate_error()
   schema <- nanoarrow::nanoarrow_allocate_schema()
@@ -349,6 +385,8 @@ radbc_statement_get_parameter_schema <- function(statement) {
   schema
 }
 
+#' @rdname radbc_statement_set_sql_query
+#' @export
 radbc_statement_bind <- function(statement, values, schema = NULL) {
   values <- nanoarrow::as_nanoarrow_array(values, schema = schema)
   schema <- nanoarrow::infer_nanoarrow_schema(values)
@@ -358,6 +396,8 @@ radbc_statement_bind <- function(statement, values, schema = NULL) {
   invisible(statement)
 }
 
+#' @rdname radbc_statement_set_sql_query
+#' @export
 radbc_statement_bind_stream <- function(statement, stream, schema = NULL) {
   stream <- nanoarrow::as_nanoarrow_array_stream(stream, schema = schema)
   error <- radbc_allocate_error()
@@ -366,6 +406,8 @@ radbc_statement_bind_stream <- function(statement, stream, schema = NULL) {
   invisible(statement)
 }
 
+#' @rdname radbc_statement_set_sql_query
+#' @export
 radbc_statement_execute_query <- function(statement) {
   error <- radbc_allocate_error()
   out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
