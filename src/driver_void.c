@@ -39,8 +39,7 @@ static void SetErrorConst(struct AdbcError* error, const char* value) {
 static AdbcStatusCode VoidDriverRelease(struct AdbcDriver* driver,
                                         struct AdbcError* error) {
   if (driver->private_data == NULL) {
-    SetErrorConst(error, "Attempt to release an uninitialized driver");
-    return ADBC_STATUS_INTERNAL;
+    return ADBC_STATUS_OK;
   }
 
   free(driver->private_data);
@@ -76,8 +75,7 @@ static AdbcStatusCode VoidDatabaseSetOption(struct AdbcDatabase* database,
 static AdbcStatusCode VoidDatabaseRelease(struct AdbcDatabase* database,
                                           struct AdbcError* error) {
   if (database->private_data == NULL) {
-    SetErrorConst(error, "Attempt to release an uninitialized database");
-    return ADBC_STATUS_INTERNAL;
+    return ADBC_STATUS_OK;
   }
 
   free(database->private_data);
@@ -148,8 +146,7 @@ static AdbcStatusCode VoidConnectionReadPartition(struct AdbcConnection* connect
 static AdbcStatusCode VoidConnectionRelease(struct AdbcConnection* connection,
                                             struct AdbcError* error) {
   if (connection->private_data == NULL) {
-    SetErrorConst(error, "Attempt to release an uninitialized database");
-    return ADBC_STATUS_INTERNAL;
+    return ADBC_STATUS_OK;
   }
 
   free(connection->private_data);
@@ -225,8 +222,7 @@ static AdbcStatusCode VoidStatementPrepare(struct AdbcStatement* statement,
 static AdbcStatusCode VoidStatementRelease(struct AdbcStatement* statement,
                                            struct AdbcError* error) {
   if (statement->private_data == NULL) {
-    SetErrorConst(error, "Attempt to release an uninitialized database");
-    return ADBC_STATUS_INTERNAL;
+    return ADBC_STATUS_OK;
   }
 
   free(statement->private_data);

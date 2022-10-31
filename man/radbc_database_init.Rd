@@ -9,7 +9,7 @@
 \usage{
 radbc_database_init(driver, ...)
 
-radbc_database_init_default(driver, options, subclass = character())
+radbc_database_init_default(driver, options = NULL, subclass = character())
 
 radbc_database_set_options(database, options)
 

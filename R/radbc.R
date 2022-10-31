@@ -27,7 +27,7 @@ radbc_database_init.default <- function(driver, ...) {
 
 #' @rdname radbc_database_init
 #' @export
-radbc_database_init_default <- function(driver, options, subclass = character()) {
+radbc_database_init_default <- function(driver, options = NULL, subclass = character()) {
   database <- .Call(RAdbcDatabaseNew, driver$driver_init_func)
   database$driver <- driver
   radbc_database_set_options(database, options)
