@@ -134,6 +134,35 @@ radbc_connection_release <- function(connection) {
   invisible(connection)
 }
 
+
+#' Connection methods
+#'
+#' @inheritParams radbc_connection_init
+#' @param info_codes (Currently undocumented)
+#' @param depth (Currently undocumented)
+#' @param catalog (Currently undocumented)
+#' @param db_schema (Currently undocumented)
+#' @param table_name (Currently undocumented)
+#' @param table_type (Currently undocumented)
+#' @param column_name (Currently undocumented)
+#' @param serialized_partition (Currently undocumented)
+#'
+#' @return
+#'   - `radbc_connection_get_info()`, `radbc_connection_get_objects`,
+#'     `radbc_connection_get_table_types()`, and `radbc_connection_read_partition()`
+#'     return a [nanoarrow_array_stream][nanoarrow::as_nanoarrow_array_stream()].
+#'   - `radbc_connection_get_table_schema()` returns a
+#'     [nanoarrow_schena][nanoarrow::as_nanoarrow_schema()]
+#'   - `radbc_connection_commit()` and `radbc_connection_rollback()` return
+#'     `connection`, invisibly.
+#' @export
+#'
+#' @examples
+#' db <- radbc_database_init(radbc_driver_void())
+#' con <- radbc_connection_init(db)
+#' # (not implemented by the void driver)
+#' try(radbc_connection_get_info(con, 0))
+#'
 radbc_connection_get_info <- function(connection, info_codes) {
   error <- radbc_allocate_error()
   out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
@@ -143,6 +172,8 @@ radbc_connection_get_info <- function(connection, info_codes) {
   out_stream
 }
 
+#' @rdname radbc_connection_get_info
+#' @export
 radbc_connection_get_objects <- function(connection, depth, catalog, db_schema,
                                          table_name, table_type, column_name) {
   error <- radbc_allocate_error()
@@ -164,6 +195,8 @@ radbc_connection_get_objects <- function(connection, depth, catalog, db_schema,
   out_stream
 }
 
+#' @rdname radbc_connection_get_info
+#' @export
 radbc_connection_get_table_schema <- function(connection, catalog, db_schema, table_name) {
   error <- radbc_allocate_error()
   out_schema <- nanoarrow::nanoarrow_allocate_schema()
@@ -181,6 +214,8 @@ radbc_connection_get_table_schema <- function(connection, catalog, db_schema, ta
   out_schema
 }
 
+#' @rdname radbc_connection_get_info
+#' @export
 radbc_connection_get_table_types <- function(connection) {
   error <- radbc_allocate_error()
   out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
@@ -190,6 +225,8 @@ radbc_connection_get_table_types <- function(connection) {
   out_stream
 }
 
+#' @rdname radbc_connection_get_info
+#' @export
 radbc_connection_read_partition <- function(connection, serialized_partition) {
   error <- radbc_allocate_error()
   out_stream <- nanoarrow::nanoarrow_allocate_array_stream()
@@ -205,12 +242,16 @@ radbc_connection_read_partition <- function(connection, serialized_partition) {
   out_stream
 }
 
+#' @rdname radbc_connection_get_info
+#' @export
 radbc_connection_commit <- function(connection) {
   error <- radbc_allocate_error()
   .Call(RAdbcConnectionCommit, connection, error)
   invisible(connection)
 }
 
+#' @rdname radbc_connection_get_info
+#' @export
 radbc_connection_rollback <- function(connection) {
   error <- radbc_allocate_error()
   .Call(RAdbcConnectionRollback, connection, error)
