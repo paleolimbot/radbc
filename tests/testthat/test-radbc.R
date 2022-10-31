@@ -121,7 +121,7 @@ test_that("invalid parameter types generate errors", {
   stmt <- radbc_statement_init(con)
 
   expect_error(
-    radbc_database_init(NULL),
+    radbc_database_init(list(driver_init_func = character())),
     "Expected external pointer with class 'radbc_driver_init_func'"
   )
 

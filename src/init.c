@@ -25,7 +25,9 @@ SEXP RAdbcVoidDriverInitFunc();
 SEXP RAdbcAllocateError(SEXP shelter_sexp);
 SEXP RAdbcErrorProxy(SEXP error_xptr);
 SEXP RAdbcStatusCodeMessage(SEXP status_sexp);
-SEXP RAdbcDatabaseNew(SEXP driver_init_func_xptr);
+SEXP RAdbcLoadDriver(SEXP driver_name_sexp, SEXP entrypoint_sexp);
+SEXP RAdbcLoadDriverFromInitFunc(SEXP driver_init_func_xptr);
+SEXP RAdbcDatabaseNew(SEXP driver_xptr);
 SEXP RAdbcDatabaseSetOption(SEXP database_xptr, SEXP key_sexp, SEXP value_sexp, SEXP error_xptr);
 SEXP RAdbcDatabaseInit(SEXP database_xptr, SEXP error_xptr);
 SEXP RAdbcDatabaseRelease(SEXP database_xptr, SEXP error_xptr);
@@ -59,6 +61,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"RAdbcAllocateError", (DL_FUNC)&RAdbcAllocateError, 1},
     {"RAdbcErrorProxy", (DL_FUNC)&RAdbcErrorProxy, 1},
     {"RAdbcStatusCodeMessage", (DL_FUNC)&RAdbcStatusCodeMessage, 1},
+    {"RAdbcLoadDriver", (DL_FUNC)&RAdbcLoadDriver, 2},
+    {"RAdbcLoadDriverFromInitFunc", (DL_FUNC)&RAdbcLoadDriverFromInitFunc, 1},
     {"RAdbcDatabaseNew", (DL_FUNC)&RAdbcDatabaseNew, 1},
     {"RAdbcDatabaseSetOption", (DL_FUNC)&RAdbcDatabaseSetOption, 4},
     {"RAdbcDatabaseInit", (DL_FUNC)&RAdbcDatabaseInit, 2},

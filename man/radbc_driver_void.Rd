@@ -7,12 +7,13 @@
 \usage{
 radbc_driver_void()
 
-radbc_driver(driver_init_func, ..., subclass = character())
+radbc_driver(x, entrypoint = NULL, ..., subclass = character())
 }
 \arguments{
-\item{driver_init_func}{An external pointer to a DL_FUNC with the type
-\code{AdbcDriverInitFunc} specified in the adbc.h header. The external pointer
-must have the class "radbc_driver_init_func".}
+\item{x, entrypoint}{An ADBC driver may be defined either as an init function
+or as an identifier with an entrypoint name. A driver init func
+must be an external pointer to a DL_FUNC with the type
+\code{AdbcDriverInitFunc} specified in the adbc.h header.}
 
 \item{...}{Further key/value parameters to store with the (R-level) driver
 object.}

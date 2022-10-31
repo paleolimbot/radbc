@@ -5,9 +5,10 @@
 #' name and an initializer function with an optional subclass to control
 #' finer-grained behaviour at the R level.
 #'
-#' @param driver_init_func An external pointer to a DL_FUNC with the type
-#'   `AdbcDriverInitFunc` specified in the adbc.h header. The external pointer
-#'   must have the class "radbc_driver_init_func".
+#' @param x,entrypoint An ADBC driver may be defined either as an init function
+#'   or as an identifier with an entrypoint name. A driver init func
+#'   must be an external pointer to a DL_FUNC with the type
+#'   `AdbcDriverInitFunc` specified in the adbc.h header.
 #' @param ... Further key/value parameters to store with the (R-level) driver
 #'   object.
 #' @param subclass An optional subclass for finer-grained control of
@@ -32,13 +33,23 @@ radbc_driver_void <- function() {
 
 #' @rdname radbc_driver_void
 #' @export
-radbc_driver <- function(driver_init_func, ...,  subclass = character()) {
-  stopifnot(inherits(driver_init_func, "radbc_driver_init_func"))
+radbc_driver <- function(x, entrypoint = NULL, ..., subclass = character()) {
+  if (inherits(x, "radbc_driver_init_func")) {
+    driver <- .Call(RAdbcLoadDriverFromInitFunc, x)
+    driver$driver_init_func <- x
+  } else {
+    driver <- .Call(RAdbcLoadDriver, x, entrypoint)
+    driver$name <- x
+    driver$entrypoint <- entrypoint
+  }
 
-  structure(
-    as.environment(list(driver_init_func = driver_init_func, ...)),
-    class = c(subclass, "radbc_driver")
-  )
+  args <- list(...)
+  for (i in seq_along(args)) {
+    driver[[names(args)[i]]] <- args[[i]]
+  }
+
+  class(driver) <- c(subclass, class(driver))
+  driver
 }
 
 internal_driver_env <- new.env(parent = emptyenv())
