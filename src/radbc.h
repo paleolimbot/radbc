@@ -69,6 +69,7 @@ static inline SEXP radbc_allocate_xptr(SEXP shelter_sexp = R_NilValue) {
 
   memset(ptr, 0, sizeof(T));
   SEXP xptr = PROTECT(R_MakeExternalPtr(ptr, R_NilValue, shelter_sexp));
+
   SEXP xptr_class = PROTECT(Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(xptr_class, 0, Rf_mkChar(radbc_xptr_class<T>()));
   SET_STRING_ELT(xptr_class, 1, Rf_mkChar("radbc_xptr"));
