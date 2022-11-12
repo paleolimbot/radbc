@@ -14,33 +14,44 @@
 #' as.data.frame(result$get_next())
 #'
 radbc_driver_broken_record <- function(data) {
-  # Not caching, because data may be different
-  radbc_driver(
-    .Call(RAdbcMonkeyDriverInitFunc),
-    data = data,
-    subclass = "radbc_driver_broken_record"
-  )
+  force(data)
+  stopifnot(is.data.frame(data))
+  stream_fun <- function() {
+    stream <- nanoarrow::as_nanoarrow_array_stream(data)
+    nanoarrow::nanoarrow_pointer_addr_chr(stream)
+  }
+
+  broken_record_env$stream_fun <- stream_fun
+
+  if (is.null(internal_driver_env$broken_record)) {
+    internal_driver_env$broken_record <- radbc_driver(
+      .Call(RAdbcMonkeyDriverInitFunc),
+      subclass = "radbc_driver_broken_record"
+    )
+  }
+
+  internal_driver_env$broken_record
+}
+
+broken_record_env <- new.env(parent = emptyenv())
+
+broken_record_get_stream <- function() {
+  broken_record_env$stream_fun()
 }
 
 #' @export
 radbc_database_init.radbc_driver_broken_record <- function(driver, ...) {
-  out <- radbc_database_init_default(driver, subclass = "radbc_database_broken_record")
-  out$data <- driver$data
-  out
+  radbc_database_init_default(driver, subclass = "radbc_database_broken_record")
 }
 
 #' @export
 radbc_connection_init.radbc_database_broken_record <- function(database, ...) {
-  out <- radbc_connection_init_default(database, subclass = "radbc_connection_broken_record")
-  out$data <- database$data
-  out
+  radbc_connection_init_default(database, subclass = "radbc_connection_broken_record")
 }
 
 #' @export
 radbc_statement_init.radbc_connection_broken_record <- function(connection, ...) {
-  stream <- nanoarrow::as_nanoarrow_array_stream(connection$data)
   options <- list(
-    result_stream_address = nanoarrow::nanoarrow_pointer_addr_chr(stream),
     ...
   )
   radbc_statement_init_default(connection, options, subclass = "radbc_statement_broken_record")
