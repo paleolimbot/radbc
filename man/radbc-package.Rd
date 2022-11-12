@@ -6,7 +6,7 @@
 \alias{radbc-package}
 \title{radbc: Proof of Concept R Wrapper for 'ADBC'}
 \description{
-Provides a proof-of-concept R wrapper for 'Arrow' Database Connectivity ('ACBC').
+Provides a proof-of-concept R wrapper for 'Arrow' Database Connectivity ('ADBC').
 }
 \seealso{
 Useful links:
