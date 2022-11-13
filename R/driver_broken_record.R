@@ -1,7 +1,7 @@
 
 #' Always return the same data
 #'
-#' A variant of the broken_record driver that always returns the same data set.
+#' A variant of the [radbc_driver_monkey()] that always returns the same data set.
 #'
 #' @return An object of class 'radbc_driver_broken_record'
 #' @export
