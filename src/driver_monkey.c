@@ -192,9 +192,32 @@ static AdbcStatusCode MonkeyStatementExecuteQuery(struct AdbcStatement* statemen
                                                   struct AdbcError* error) {
   struct MonkeyStatementPrivate* statement_private =
       (struct MonkeyStatementPrivate*)statement->private_data;
-  memcpy(out, &statement_private->stream, sizeof(struct ArrowArrayStream));
-  statement_private->stream.release = NULL;
-  *rows_affected = -1;
+
+  if (statement_private->stream.release) {
+    memcpy(out, &statement_private->stream, sizeof(struct ArrowArrayStream));
+    statement_private->stream.release = NULL;
+  } else {
+    SEXP get_stream_call = PROTECT(Rf_lang1(Rf_install("broken_record_get_stream")));
+    SEXP stream = PROTECT(Rf_eval(get_stream_call, R_FindNamespace(Rf_mkString("radbc"))));
+
+    char* end_ptr;
+    intptr_t addr = strtoll(CHAR(STRING_ELT(stream, 0)), &end_ptr, 10);
+    struct ArrowArrayStream* src = (struct ArrowArrayStream*)addr;
+    if (src == NULL) {
+      SetErrorConst(error, "result_stream_address was NULL");
+      return ADBC_STATUS_INVALID_ARGUMENT;
+    }
+
+    memcpy(out, src, sizeof(struct ArrowArrayStream));
+    src->release = NULL;
+
+    UNPROTECT(2);
+  }
+
+  if (rows_affected) {
+    *rows_affected = -1;
+  }
+
   return ADBC_STATUS_OK;
 }
 
