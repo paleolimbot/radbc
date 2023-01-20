@@ -14,27 +14,27 @@
 #' @param subclass An optional subclass for finer-grained control of
 #'   behaviour at the R level.
 #'
-#' @return An object of class 'radbc_driver'
+#' @return An object of class 'adbc_driver'
 #' @export
 #'
 #' @examples
-#' radbc_driver_void()
+#' adbc_driver_void()
 #'
-radbc_driver_void <- function() {
+adbc_driver_void <- function() {
   if (is.null(internal_driver_env$void)) {
-    internal_driver_env$void <- radbc_driver(
+    internal_driver_env$void <- adbc_driver(
       .Call(RAdbcVoidDriverInitFunc),
-      subclass = "radbc_driver_void"
+      subclass = "adbc_driver_void"
     )
   }
 
   internal_driver_env$void
 }
 
-#' @rdname radbc_driver_void
+#' @rdname adbc_driver_void
 #' @export
-radbc_driver <- function(x, entrypoint = NULL, ..., subclass = character()) {
-  if (inherits(x, "radbc_driver_init_func")) {
+adbc_driver <- function(x, entrypoint = NULL, ..., subclass = character()) {
+  if (inherits(x, "adbc_driver_init_func")) {
     driver <- .Call(RAdbcLoadDriverFromInitFunc, x)
     driver$driver_init_func <- x
   } else {
@@ -55,13 +55,13 @@ radbc_driver <- function(x, entrypoint = NULL, ..., subclass = character()) {
 internal_driver_env <- new.env(parent = emptyenv())
 
 #' @export
-print.radbc_driver <- function(x, ...) {
+print.adbc_driver <- function(x, ...) {
   str(x, ...)
 }
 
 #' @importFrom utils str
 #' @export
-str.radbc_driver <- function(object, ...) {
+str.adbc_driver <- function(object, ...) {
   cat(sprintf("<%s> ", class(object)[1]))
 
   fields <- names(object)

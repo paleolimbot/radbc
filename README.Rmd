@@ -36,6 +36,6 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(radbc)
-db <- radbc:::radbc_database_init(radbc:::radbc_driver_void())
-radbc:::radbc_database_release(db)
+db <- radbc:::adbc_database_init(radbc:::adbc_driver_void())
+radbc:::adbc_database_release(db)
 ```

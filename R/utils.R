@@ -31,47 +31,47 @@ xptr_env <- function(xptr) {
 }
 
 #' @export
-length.radbc_xptr <- function(x) {
+length.adbc_xptr <- function(x) {
   length(xptr_env(x))
 }
 
 #' @export
-names.radbc_xptr <- function(x) {
+names.adbc_xptr <- function(x) {
   names(xptr_env(x))
 }
 
 
 #' @export
-`[[.radbc_xptr` <- function(x, i) {
+`[[.adbc_xptr` <- function(x, i) {
   xptr_env(x)[[i]]
 }
 
 #' @export
-`[[<-.radbc_xptr` <- function(x, i, value) {
+`[[<-.adbc_xptr` <- function(x, i, value) {
   env <- xptr_env(x)
   env[[i]] <- value
   x
 }
 
 #' @export
-`$.radbc_xptr` <- function(x, name) {
+`$.adbc_xptr` <- function(x, name) {
   xptr_env(x)[[name]]
 }
 
 #' @export
-`$<-.radbc_xptr` <- function(x, name, value) {
+`$<-.adbc_xptr` <- function(x, name, value) {
   env <- xptr_env(x)
   env[[name]] <- value
   x
 }
 
 #' @export
-print.radbc_xptr <- function(x, ...) {
+print.adbc_xptr <- function(x, ...) {
   str(x, ...)
 }
 
 #' @export
-str.radbc_xptr <- function(object, ...) {
+str.adbc_xptr <- function(object, ...) {
   cat(sprintf("<%s> %s ", class(object)[1], format(object)))
   env_proxy <- as.list(xptr_env(object))
   env_proxy$options <- as.list(env_proxy$options)

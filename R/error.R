@@ -1,5 +1,5 @@
 
-radbc_allocate_error <- function(shelter = NULL) {
+adbc_allocate_error <- function(shelter = NULL) {
   .Call(RAdbcAllocateError, shelter)
 }
 
@@ -11,14 +11,14 @@ stop_for_error <- function(status, error) {
 }
 
 #' @export
-print.radbc_error <- function(x, ...) {
+print.adbc_error <- function(x, ...) {
   str(x, ...)
 }
 
 #' @importFrom utils str
 #' @export
-str.radbc_error <- function(object, ...) {
-  cat("<radbc_error> ")
+str.adbc_error <- function(object, ...) {
+  cat("<adbc_error> ")
   str(.Call(RAdbcErrorProxy, object), ...)
   invisible(object)
 }
@@ -27,22 +27,22 @@ str.radbc_error <- function(object, ...) {
 # to make nice auto-complete when interacting in an IDE
 
 #' @export
-length.radbc_error <- function(x, ...) {
+length.adbc_error <- function(x, ...) {
   3L
 }
 
 #' @export
-names.radbc_error <- function(x, ...) {
+names.adbc_error <- function(x, ...) {
   c("message", "vendor_code", "sqlstate")
 }
 
 #' @export
-`[[.radbc_error` <- function(x, i, ...) {
+`[[.adbc_error` <- function(x, i, ...) {
   .Call(RAdbcErrorProxy, x)[[i]]
 }
 
 #' @export
-`$.radbc_error` <- function(x, i, ...) {
+`$.adbc_error` <- function(x, i, ...) {
   x[[i]]
 }
 

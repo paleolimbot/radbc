@@ -14,14 +14,14 @@ static void finalize_error_xptr(SEXP error_xptr) {
     error->release(error);
   }
 
-  radbc_xptr_default_finalize<AdbcError>(error_xptr);
+  adbc_xptr_default_finalize<AdbcError>(error_xptr);
 }
 
 extern "C" SEXP RAdbcAllocateError(SEXP shelter_sexp) {
-  SEXP error_xptr = PROTECT(radbc_allocate_xptr<AdbcError>(shelter_sexp));
+  SEXP error_xptr = PROTECT(adbc_allocate_xptr<AdbcError>(shelter_sexp));
   R_RegisterCFinalizer(error_xptr, &finalize_error_xptr);
 
-  AdbcError* error = radbc_from_xptr<AdbcError>(error_xptr);
+  AdbcError* error = adbc_from_xptr<AdbcError>(error_xptr);
   error->message = nullptr;
   error->vendor_code = 0;
   memset(error->sqlstate, 0, sizeof(error->sqlstate));
@@ -32,10 +32,10 @@ extern "C" SEXP RAdbcAllocateError(SEXP shelter_sexp) {
 }
 
 extern "C" SEXP RAdbcErrorProxy(SEXP error_xptr) {
-  AdbcError* error = radbc_from_xptr<AdbcError>(error_xptr);
+  AdbcError* error = adbc_from_xptr<AdbcError>(error_xptr);
   const char* names[] = {"message", "vendor_code", "sqlstate", ""};
   SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
-  
+
   if (error->message != nullptr) {
     SEXP error_message = PROTECT(Rf_allocVector(STRSXP, 1));
     SET_STRING_ELT(error_message, 0, Rf_mkCharCE(error->message, CE_UTF8));
@@ -54,7 +54,7 @@ extern "C" SEXP RAdbcErrorProxy(SEXP error_xptr) {
 }
 
 extern "C" SEXP RAdbcStatusCodeMessage(SEXP status_sexp) {
-  int status = radbc_as_int(status_sexp);
+  int status = adbc_as_int(status_sexp);
   const char* msg = AdbcStatusCodeMessage(status);
   return Rf_mkString(msg);
 }

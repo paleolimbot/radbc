@@ -294,7 +294,7 @@ static AdbcStatusCode VoidDriverInitFunc(int version, void* raw_driver,
 SEXP RAdbcVoidDriverInitFunc() {
   SEXP xptr =
       PROTECT(R_MakeExternalPtrFn((DL_FUNC)VoidDriverInitFunc, R_NilValue, R_NilValue));
-  Rf_setAttrib(xptr, R_ClassSymbol, Rf_mkString("radbc_driver_init_func"));
+  Rf_setAttrib(xptr, R_ClassSymbol, Rf_mkString("adbc_driver_init_func"));
   UNPROTECT(1);
   return xptr;
 }
