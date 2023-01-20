@@ -1,7 +1,7 @@
-Package: radbc
+Package: adbcdrivermanager
 Title: Proof of Concept R Wrapper for 'ADBC'
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
     person("Dewey", "Dunnington", , "dewey@dunnington.ca", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9415-4582"))
 Description: Provides a proof-of-concept R wrapper for 'Arrow' Database
@@ -11,12 +11,12 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 SystemRequirements: C++11
-Suggests: 
+Suggests:
     arrow,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: https://github.com/paleolimbot/radbc
-BugReports: https://github.com/paleolimbot/radbc/issues
-Imports: 
+URL: https://github.com/paleolimbot/adbcdrivermanager
+BugReports: https://github.com/paleolimbot/adbcdrivermanager/issues
+Imports:
     nanoarrow
 Remotes: apache/arrow-nanoarrow/r

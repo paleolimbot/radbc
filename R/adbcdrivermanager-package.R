@@ -2,6 +2,6 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @useDynLib radbc, .registration = TRUE
+#' @useDynLib adbcdrivermanager, .registration = TRUE
 ## usethis namespace: end
 NULL
